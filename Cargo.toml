@@ -1,0 +1,31 @@
+[package]
+name = "wwwfmt"
+description = "CLI tool to format (minify/prettify) HTML/JS/CSS files"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = [ "cli" ]
+cli = [ "dep:argh" ]
+
+[dependencies]
+argh = { version = "0.1", optional = true }
+serde = { version = "1", features = [ "derive" ] }
+toml = "0.8"
+oxc = { version = "0.58", features = [ "minifier", "codegen" ] }
+lightningcss = "1.0.0-alpha.63"
+quick-xml = "0.37"
+
+[[bin]]
+name = "wwwfmt"
+path = "src/main.rs"
+required-features = [ "cli" ]
+
+[lib]
+name = "wwwfmt"
+path = "src/lib.rs"
+
+[dev-dependencies]
+include_dir = "0.7"
+testdir = "0.9"
+pretty_assertions = "1.4"
