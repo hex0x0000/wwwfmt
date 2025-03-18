@@ -32,7 +32,7 @@ struct Cli {
     /// use default configuration
     #[argh(switch, short = 'd')]
     default_cfg: bool,
-    /// minifies all files starting from the root of the project (where the .wwwfmt.toml file lies) into the wwwmin directoy
+    /// minifies all files starting from the root of the project
     #[argh(switch, short = 'a')]
     all: bool,
     /// minifies a single file
@@ -90,7 +90,7 @@ fn handle(cmd: Cli) -> Result<(), String> {
         root.pop();
         fmt::all(root, &cfg, minify, inplace)
     } else if let Some(path) = cmd.file {
-        fmt::file(path, None, &cfg, minify, inplace)
+        fmt::file(path, None, &cfg, minify, inplace, None)
             .map_err(|e| format!("Failed to format file: {e}"))
     } else {
         Err("You must specify what you want to format (either --all or a --file).".into())

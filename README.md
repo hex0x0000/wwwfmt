@@ -21,7 +21,6 @@ Options:
   --write-default   write default configuration
   -d, --default-cfg use default configuration
   -a, --all         minifies all files starting from the root of the project
-                    (where the .wwwfmt.toml file lies) into the wwwmin directoy
   -f, --file        minifies a single file
   --inplace         minifies and replaces the file(s) in place
   --no-inplace      prettifies file(s) in new file(s)
@@ -36,7 +35,7 @@ Example:
 use wwwfmt::conf;
 wwwfmt::all("/path/to/myfilestominify", &conf::Config::default(), true, false).unwrap();
 wwwfmt::all("/path/to/myfilestominifyinplace", &conf::Config::default(), true, true).unwrap();
-wwwfmt::file("/path/to/myproject/myfiletoprettify.html", Some("/path/to/myproject"), &conf::Config::default(), false, true).unwrap();
+wwwfmt::file("/path/to/myproject/myfiletoprettify.html", Some("/path/to/myproject"), &conf::Config::default(), false, true, None).unwrap();
 ```
 
 ## Libraries used
@@ -44,6 +43,6 @@ wwwfmt::file("/path/to/myproject/myfiletoprettify.html", Some("/path/to/myprojec
 - [lightningcss](https://github.com/parcel-bundler/lightningcss) to format CSS files.
 - [oxc](https://github.com/oxc-project/oxc) to format JavaScript (and TypeScript) files.
 - [quick-xml](https://github.com/tafia/quick-xml) to parse HTML files (formatting is done by this library).
-- [argh](https://github.com/google/argh) for CLI arguments parsing
-- [toml](https://github.com/toml-rs/toml) for the configuration
+- [argh](https://github.com/google/argh) for CLI arguments parsing.
+- [toml](https://github.com/toml-rs/toml) for the configuration.
 

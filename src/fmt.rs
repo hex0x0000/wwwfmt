@@ -31,14 +31,24 @@ pub fn inner_file(
 
 /// Formats one file.
 ///
-/// - [`path`]: file's original path.
-/// - [`root`]: project's root dir. Needed if
+/// - `path`: file's original path.
+/// - `root`: project's root dir. Needed if files need to be outputted in an outdir.
+/// - `config`: Configuration
+/// - `minify`: Whether to minify or prettify
+/// - `inplace`: Whether to format in-place or in another file. If the output directory is
+/// specified in the confi directory, the output file will end up there, otherwise a new file
+/// called either file.prty.ext or file.min.ext will be created on the same directory.
+/// - `alloc`: Oxc's arena [`Allocator`]. You can optionally specify this to improve performance
+/// if you are manually iterating files. (using [`all`] is recommended)
+///
+/// The file's type is automatically recognized by its extension
 pub fn file<P: Into<PathBuf>>(
     path: P,
     root: Option<P>,
     config: &Config,
     minify: bool,
     inplace: bool,
+    alloc: Option<&Allocator>,
 ) -> Result<(), String> {
     let path: PathBuf = path.into();
     let ext = path
@@ -46,6 +56,11 @@ pub fn file<P: Into<PathBuf>>(
         .and_then(|x| x.to_str())
         .map(|x| x.to_lowercase())
         .ok_or("Failed to get file extension.")?;
+    let alloc = if let Some(alloc) = alloc {
+        alloc
+    } else {
+        &Allocator::new()
+    };
     inner_file(
         &path,
         &root.map(|p| p.into()),
@@ -53,11 +68,14 @@ pub fn file<P: Into<PathBuf>>(
         config,
         minify,
         inplace,
-        &Allocator::new(),
+        alloc,
     )
 }
 
 /// Formats all files starting from the project's root directory.
+///
+/// The file's type are automatically recognized by their extension, if an extension is not
+/// recognized the file is skipped.
 pub fn all<P: Into<PathBuf>>(
     root: P,
     config: &Config,
