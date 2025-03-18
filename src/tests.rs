@@ -1,4 +1,5 @@
-use std::fs::{self, File};
+use std::fs::File;
+use std::io::Write;
 use std::path::PathBuf;
 
 use include_dir::{include_dir, Dir};
@@ -6,7 +7,6 @@ use oxc::allocator::Allocator;
 use pretty_assertions::assert_eq;
 use testdir::testdir;
 
-use crate::config::JavaScript;
 use crate::fmt;
 use crate::{config::Config, html::Html};
 
@@ -20,7 +20,10 @@ fn get_file(file: &str) -> &'static str {
 fn copy_files_to(mut outdir: PathBuf) {
     for file in ASSETS.files() {
         outdir.push(file.path().file_name().unwrap());
-        fs::copy(file.path(), &outdir).unwrap();
+        File::create_new(&outdir)
+            .unwrap()
+            .write_all(file.contents())
+            .unwrap();
         outdir.pop();
     }
 }
@@ -28,13 +31,7 @@ fn copy_files_to(mut outdir: PathBuf) {
 #[test]
 fn test_html() {
     let alloc = Allocator::new();
-    let config = Config {
-        javascript: JavaScript {
-            use_single_quotes: false,
-            ..JavaScript::default()
-        },
-        ..Config::default()
-    };
+    let config = Config::default();
     let html = Html::new(get_file("example.html"), &alloc, &config);
     let ugly = html
         .minify()

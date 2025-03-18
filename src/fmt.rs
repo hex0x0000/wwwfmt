@@ -58,7 +58,13 @@ pub fn file<P: Into<PathBuf>>(
 }
 
 /// Formats all files starting from the project's root directory.
-pub fn all(root: PathBuf, config: &Config, minify: bool, inplace: bool) -> Result<(), String> {
+pub fn all<P: Into<PathBuf>>(
+    root: P,
+    config: &Config,
+    minify: bool,
+    inplace: bool,
+) -> Result<(), String> {
     let alloc = Allocator::new();
+    let root: PathBuf = root.into();
     files::recurse_dir(&root, &Some(root.clone()), config, minify, inplace, &alloc)
 }

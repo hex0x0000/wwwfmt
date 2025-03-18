@@ -17,16 +17,12 @@ const EMPTY_TAGS: [&[u8]; 14] = [
 ];
 
 fn position(src: &str, pos: u64) -> String {
-    let mut lines = 0;
-    let mut cols = 0;
-    let pos: usize = match pos.try_into() {
-        Ok(n) => n,
-        Err(_) => return "unknown position".into(),
-    };
-    let src = match src.get(0..pos) {
+    let src = match src.get(0..(pos as usize)) {
         Some(s) => s,
         None => return "unknown position".into(),
     };
+    let mut lines = 0;
+    let mut cols = 0;
     for c in src.chars() {
         match c {
             '\n' => {
@@ -142,7 +138,7 @@ impl<'a> Html<'a> {
             .prettify_indent_kind
             .repeat(self.config.html.prettify_indent_num * self.indent);
         let writer = self.writer.get_mut();
-        for l in src.split('\n') {
+        for l in src.trim().split('\n') {
             writer
                 .write_all(indent.as_bytes())
                 .map_err(|e| format!("Failed to write text indent: {e}"))?;
