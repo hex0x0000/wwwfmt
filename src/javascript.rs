@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use oxc::{
     allocator::Allocator,
-    codegen::{CodeGenerator, CodegenOptions},
+    codegen::{Codegen, CodegenOptions},
     minifier::{CompressOptions, MangleOptions, Minifier, MinifierOptions},
     parser::{Parser, ParserReturn},
     span::SourceType,
@@ -41,7 +41,7 @@ pub fn fmt_str(
             }),
         })
         .build(alloc, &mut program);
-        Ok(CodeGenerator::new()
+        Ok(Codegen::new()
             .with_options(CodegenOptions {
                 minify: true,
                 single_quote: config.javascript.use_single_quotes,
@@ -52,7 +52,7 @@ pub fn fmt_str(
             .build(&program)
             .code)
     } else {
-        Ok(CodeGenerator::new()
+        Ok(Codegen::new()
             .with_options(CodegenOptions {
                 minify: false,
                 single_quote: config.javascript.use_single_quotes,

@@ -43,7 +43,7 @@ pub fn recurse_dir(
                     None => continue,
                 };
                 fmt::inner_file(&f.path(), root, ext, config, minify, inplace, alloc)
-                    .map_err(|e| format!("{}: {e}", f.path().display()))?
+                    .map_err(|e| format!("{}: {e}", f.path().display()))?;
             }
             Ok(d) if d.path().is_dir() && !should_ignore(&d.path(), config) => {
                 recurse_dir(&d.path(), root, config, minify, inplace, alloc)?

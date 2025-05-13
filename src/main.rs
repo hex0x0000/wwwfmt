@@ -92,6 +92,7 @@ fn handle(cmd: Cli) -> Result<(), String> {
     } else if let Some(path) = cmd.file {
         fmt::file(path, None, &cfg, minify, inplace, None)
             .map_err(|e| format!("Failed to format file: {e}"))
+            .map(|_| ())
     } else {
         Err("You must specify what you want to format (either --all or a --file).".into())
     }

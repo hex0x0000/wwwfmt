@@ -13,19 +13,26 @@ pub fn inner_file(
     minify: bool,
     inplace: bool,
     alloc: &Allocator,
-) -> Result<(), String> {
+) -> Result<bool, String> {
     let out_path = if inplace {
         None
     } else {
         Some(files::outdir(path.clone(), config, root, minify)?)
     };
     match ext.as_str() {
-        "html" | "htm" => html::fmt(path, out_path, config, minify, alloc),
-        "css" => css::fmt(path, out_path, config, minify),
-        "js" | "mjs" | "jsx" | "cjs" | "ts" | "mts" | "cts" | "tsx" => {
-            javascript::fmt(path, out_path, config, minify, alloc)
+        "html" | "htm" => {
+            html::fmt(path, out_path, config, minify, alloc)?;
+            Ok(true)
         }
-        _ => Ok(()),
+        "css" => {
+            css::fmt(path, out_path, config, minify)?;
+            Ok(true)
+        }
+        "js" | "mjs" | "jsx" | "cjs" | "ts" | "mts" | "cts" | "tsx" => {
+            javascript::fmt(path, out_path, config, minify, alloc)?;
+            Ok(true)
+        }
+        _ => Ok(false),
     }
 }
 
@@ -36,12 +43,14 @@ pub fn inner_file(
 /// - `config`: Configuration
 /// - `minify`: Whether to minify or prettify
 /// - `inplace`: Whether to format in-place or in another file. If the output directory is
-/// specified in the confi directory, the output file will end up there, otherwise a new file
+/// specified in the config directory, the output file will end up there, otherwise a new file
 /// called either file.prty.ext or file.min.ext will be created on the same directory.
 /// - `alloc`: Oxc's arena [`Allocator`]. You can optionally specify this to improve performance
 /// if you are manually iterating files. (using [`all`] is recommended)
 ///
-/// The file's type is automatically recognized by its extension
+/// The file's type is automatically recognized by its extension. If the file is recognized
+/// it will successfully write the file and return Ok(true), if the file extension is not recognized
+/// it returns Ok(false). An error string is returned in case of error.
 pub fn file<P: Into<PathBuf>>(
     path: P,
     root: Option<P>,
@@ -49,7 +58,7 @@ pub fn file<P: Into<PathBuf>>(
     minify: bool,
     inplace: bool,
     alloc: Option<&Allocator>,
-) -> Result<(), String> {
+) -> Result<bool, String> {
     let path: PathBuf = path.into();
     let ext = path
         .extension()
