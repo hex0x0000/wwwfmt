@@ -5,14 +5,14 @@ use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 
 /// The kind of indent used for HTML
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub enum IndentKind {
     Tab,
     Space,
 }
 
 /// Specifies the configuration for HTML
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Html {
     /// Indent character used when indenting. Valid when prettifying
     pub prettify_indent_kind: IndentKind,
@@ -47,7 +47,7 @@ impl Default for Html {
 }
 
 /// Specifies the configuration for CSS
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Css {
     /// Optimize CSS while minifying
     pub uglify_optimize: bool,
@@ -62,7 +62,7 @@ impl Default for Css {
 }
 
 /// Specifies the configuration for JavaScript (TypeScript, etc...)
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct JavaScript {
     /// Use only single quotes. Valid for both minifying a prettifying
     pub use_single_quotes: bool,
@@ -90,7 +90,7 @@ impl Default for JavaScript {
 }
 
 /// Main Config struct
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Config {
     pub html: Html,
     pub css: Css,
